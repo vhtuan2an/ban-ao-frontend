@@ -85,25 +85,41 @@ const OrderManagement = () => {
   };
 
   const handleSaveOrder = async (orderData) => {
-    try {
-      if (orderData._id) {
-        // Update existing order
-        await orderApi.updateOrder(orderData._id, orderData);
-        showNotification('Cập nhật đơn hàng thành công', 'success');
-      } else {
-        // Add new order
-        await orderApi.createOrder(orderData);
-        showNotification('Tạo đơn hàng thành công', 'success');
-      }
-      // Fetch lại dữ liệu từ API sau khi thêm/sửa thành công
-      await fetchOrders();
-    } catch (error) {
-      const errorMessage = error.response?.data?.message || 
-                          (orderData.id ? 'Cập nhật đơn hàng thất bại' : 'Tạo đơn hàng thất bại');
-      showNotification(errorMessage, 'error');
-      console.error('Error saving order:', error);
+  try {
+    console.log('Handling save order:', orderData);
+    
+    if (orderData._id) {
+      // Update existing order
+      const orderId = orderData._id;
+      const { _id, ...updateData } = orderData;
+      
+      console.log('Updating order with ID:', orderId);
+      console.log('Update data:', updateData);
+      
+      await orderApi.updateOrder(orderId, updateData);
+      showNotification('Cập nhật đơn hàng thành công', 'success');
+    } else {
+      // Add new order
+      console.log('Creating new order with data:', orderData);
+      const response = await orderApi.createOrder(orderData);
+      console.log('Create order response:', response);
+      showNotification('Tạo đơn hàng thành công', 'success');
     }
-  };
+    
+    await fetchOrders();
+  } catch (error) {
+    console.error('Full error object:', error);
+    if (error.response) {
+      console.error('Error response:', error.response.data);
+      console.error('Error status:', error.response.status);
+    }
+    
+    const isUpdate = orderData._id;
+    const errorMessage = error.response?.data?.message || 
+                        (isUpdate ? 'Cập nhật đơn hàng thất bại' : 'Tạo đơn hàng thất bại');
+    showNotification(errorMessage, 'error');
+  }
+};
 
   const showNotification = (message, type) => {
     setNotification({

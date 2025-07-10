@@ -137,33 +137,50 @@ const OrderForm = ({ isOpen, onClose, order, onSave }) => {
   };
 
   const calculateTotal = () => {
-    return formData.items.reduce((total, item) => total + (item.subtotal || 0), 0);
+  return formData.items.reduce((total, item) => total + (item.subtotal || 0), 0);
   };
 
   const validate = () => {
-    const newErrors = {};
-    if (!formData.customer) newErrors.customer = 'Vui lòng chọn khách hàng';
-    if (formData.items.length === 0) newErrors.items = 'Vui lòng thêm ít nhất một sản phẩm';
-    
-    formData.items.forEach((item, index) => {
-      if (!item.product) newErrors[`item_${index}_product`] = 'Vui lòng chọn sản phẩm';
-      if (!item.quantity || item.quantity <= 0) newErrors[`item_${index}_quantity`] = 'Số lượng phải lớn hơn 0';
-    });
+  const newErrors = {};
+  if (!formData.customer) newErrors.customer = 'Vui lòng chọn khách hàng';
+  if (formData.items.length === 0) newErrors.items = 'Vui lòng thêm ít nhất một sản phẩm';
+  
+  formData.items.forEach((item, index) => {
+    if (!item.product) newErrors[`item_${index}_product`] = 'Vui lòng chọn sản phẩm';
+    if (!item.quantity || item.quantity <= 0) newErrors[`item_${index}_quantity`] = 'Số lượng phải lớn hơn 0';
+  });
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+};
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validate()) return;
 
+    // Chuẩn hóa dữ liệu theo cấu trúc backend mong đợi
+    const normalizedItems = formData.items.map(item => ({
+      productId: item.product, // Backend expect productId
+      quantity: parseInt(item.quantity) || 0
+      // Chỉ gửi productId và quantity
+    }));
+
     const orderData = {
-      ...formData,
-      totalAmount: calculateTotal(),
-      ...(order && { id: order._id })
+      customerId: formData.customer, // Backend expect customerId
+      items: normalizedItems,
+      paymentMethod: formData.paymentMethod,
+      paymentStatus: formData.paymentStatus,
+      notes: formData.notes
+      // Không gửi status, totalAmount - backend sẽ tự tính
     };
 
+    // Chỉ thêm _id khi update
+    if (order && order._id) {
+      orderData._id = order._id;
+    }
+
+    console.log('Order data being sent:', orderData); // Debug log
+    
     onSave(orderData);
     onClose();
   };
