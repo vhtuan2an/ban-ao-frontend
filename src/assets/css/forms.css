@@ -1,0 +1,138 @@
+/* Form Styles */
+.customer-form,
+.product-form {
+  padding: var(--spacing-lg);
+}
+
+.form-group {
+  margin-bottom: var(--spacing-lg);
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: var(--spacing-sm);
+  font-weight: 500;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  transition: var(--transition-fast);
+  background-color: var(--bg-primary);
+  color: #000000; /* Force black text color */
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+  color: #000000; /* Ensure black text on focus */
+}
+
+.form-group input.error,
+.form-group textarea.error,
+.form-group select.error {
+  border-color: var(--error-color);
+  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+  color: #000000; /* Ensure black text even with errors */
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+  color: #000000; /* Specific black text for textarea */
+}
+
+.form-group select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+  appearance: none;
+  color: #000000; /* Specific black text for select */
+}
+
+/* Placeholder text styling */
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #666666; /* Darker gray for placeholder text */
+  opacity: 1;
+}
+
+/* Ensure text color for specific input types */
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group input[type="url"],
+.form-group input[type="email"],
+.form-group input[type="tel"] {
+  color: #000000 !important;
+}
+
+/* Fix for autofill/autocomplete styling */
+.form-group input:-webkit-autofill,
+.form-group input:-webkit-autofill:hover,
+.form-group input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #000000 !important;
+  -webkit-box-shadow: 0 0 0px 1000px var(--bg-primary) inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.error-message {
+  color: var(--error-color);
+  font-size: 0.8rem;
+  margin-top: var(--spacing-xs);
+  display: block;
+  font-weight: 500;
+}
+
+.form-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: flex-end;
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--border-light);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+/* Input validation states - maintain black text */
+.form-group input:valid,
+.form-group textarea:valid,
+.form-group select:valid {
+  border-color: var(--success-color);
+  color: #000000;
+}
+
+.form-group input:invalid:not(:focus),
+.form-group textarea:invalid:not(:focus),
+.form-group select:invalid:not(:focus) {
+  border-color: var(--error-color);
+  color: #000000;
+}
+
+/* Special styling for image input in product form */
+.image-input {
+  color: #000000 !important;
+}
+
+/* Ensure select option text is also black */
+.form-group select option {
+  color: #000000;
+  background-color: var(--bg-primary);
+}

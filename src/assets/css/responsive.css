@@ -1,0 +1,163 @@
+/* Responsive Design */
+@media (max-width: 1024px) {
+  :root {
+    --sidebar-width: var(--sidebar-width-md);
+  }
+  
+  .main-wrapper {
+    margin-left: var(--sidebar-width-md);
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --sidebar-width: var(--sidebar-width-sm);
+  }
+  
+  .main-wrapper {
+    margin-left: var(--sidebar-width-sm);
+  }
+  
+  .nav-text {
+    font-size: 0.85rem;
+  }
+  
+  .page-header {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    align-items: flex-start;
+  }
+
+  .search-input-container {
+    flex-direction: column;
+    max-width: 100%;
+  }
+
+  .customer-table,
+  .product-table {
+    font-size: 0.9rem;
+  }
+
+  .customer-table th,
+  .customer-table td,
+  .product-table th,
+  .product-table td {
+    padding: var(--spacing-sm);
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .modal-content {
+    width: 95%;
+    margin: var(--spacing-md);
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .product-image {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .image-list {
+    justify-content: center;
+  }
+  
+  .image-item {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --sidebar-width: var(--sidebar-width-collapsed);
+  }
+  
+  .main-wrapper {
+    margin-left: var(--sidebar-width-collapsed);
+  }
+  
+  .nav-text {
+    display: none;
+  }
+  
+  .logo-text {
+    display: none;
+  }
+  
+  .user-name {
+    display: none;
+  }
+  
+  .nav-link {
+    justify-content: center;
+    padding: var(--spacing-md) var(--spacing-sm);
+  }
+  
+  .sidebar-header,
+  .sidebar-footer {
+    padding: var(--spacing-md) var(--spacing-sm);
+  }
+
+  .main-content {
+    padding: var(--spacing-md);
+  }
+
+  .customer-management,
+  .product-management {
+    padding: var(--spacing-md);
+  }
+
+  .modal-content {
+    width: 98%;
+    margin: var(--spacing-xs);
+  }
+
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding: var(--spacing-md);
+  }
+
+  .customer-form,
+  .product-form {
+    padding: var(--spacing-md);
+  }
+}
+
+/* Print Styles */
+@media print {
+  .sidebar,
+  .app-header,
+  .app-footer,
+  .modal-overlay,
+  .action-buttons,
+  .search-bar,
+  .page-header button {
+    display: none !important;
+  }
+
+  .main-wrapper {
+    margin-left: 0;
+  }
+
+  .main-content {
+    padding: 0;
+    max-width: none;
+  }
+
+  .customer-management,
+  .product-management {
+    box-shadow: none;
+    padding: 0;
+  }
+}
