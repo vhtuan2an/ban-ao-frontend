@@ -6,7 +6,7 @@ const OrderForm = ({ isOpen, onClose, order, onSave }) => {
   const [formData, setFormData] = useState({
     customer: '',
     items: [],
-    status: 'Đã tạo',
+    status: '',
     paymentMethod: 'Tiền mặt',
     paymentStatus: 'Chưa thanh toán',
     notes: ''
@@ -46,7 +46,7 @@ const OrderForm = ({ isOpen, onClose, order, onSave }) => {
           homeOrAway: item.homeOrAway || 'Home',
           adultOrKid: item.adultOrKid || 'Adult'
         })) || [],
-        status: order.status || 'Đã tạo',
+        status: order.status,
         paymentMethod: order.paymentMethod || 'Tiền mặt',
         paymentStatus: order.paymentStatus || 'Chưa thanh toán',
         notes: order.notes || ''
@@ -55,7 +55,7 @@ const OrderForm = ({ isOpen, onClose, order, onSave }) => {
       setFormData({
         customer: '',
         items: [],
-        status: 'Đã tạo',
+        // status: 'Đã tạo',
         paymentMethod: 'Tiền mặt',
         paymentStatus: 'Chưa thanh toán',
         notes: ''
@@ -185,12 +185,15 @@ const OrderForm = ({ isOpen, onClose, order, onSave }) => {
       adultOrKid: item.adultOrKid || 'Adult'
     }));
 
+    formData.items = normalizedItems;
+
     const orderData = {
       customerId: formData.customer,
       items: normalizedItems,
       paymentMethod: formData.paymentMethod,
       paymentStatus: formData.paymentStatus,
-      notes: formData.notes
+      notes: formData.notes,
+      status: formData.status
     };
 
     // Chỉ thêm _id khi update
