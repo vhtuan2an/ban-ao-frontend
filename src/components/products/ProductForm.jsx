@@ -10,6 +10,7 @@ const ProductForm = ({ isOpen, onClose, product, onSave }) => {
     quantity: 0,
     color: '',
     price: 0,
+    importPrice: 0, // Thêm trường giá nhập
     images: [],
     season: '',
     homeOrAway: 'Home',
@@ -23,7 +24,6 @@ const ProductForm = ({ isOpen, onClose, product, onSave }) => {
   const categoryOptions = ['Áo', 'Quần', 'Phụ kiện'];
   const typeOptions = ['Ngắn', 'Dài', 'Thể thao', 'Casual'];
   const sizeOptions = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
-  // const seasonOptions = ['Mùa hè', 'Mùa đông', 'Cả năm'];
   const homeOrAwayOptions = ['Home', 'Away', 'Third'];
   const adultOrKidOptions = ['Adult', 'Kid'];
   const supplierOptions = ['Chú Phát', 'Tui bán áo bóng đá', 'Áo bóng đá TPHCM', 'Áo bóng đá Retro'];
@@ -39,6 +39,7 @@ const ProductForm = ({ isOpen, onClose, product, onSave }) => {
         quantity: product.quantity || 0,
         color: product.color || '',
         price: product.price || 0,
+        importPrice: product.importPrice || 0, // Thêm giá nhập
         images: [], // reset ảnh khi sửa để người dùng chọn lại
         season: product.season || '',
         homeOrAway: product.homeOrAway || 'Home',
@@ -56,6 +57,7 @@ const ProductForm = ({ isOpen, onClose, product, onSave }) => {
         quantity: 0,
         color: '',
         price: 0,
+        importPrice: 0, // Thêm giá nhập mặc định
         images: [],
         season: '',
         homeOrAway: 'Home',
@@ -106,7 +108,8 @@ const ProductForm = ({ isOpen, onClose, product, onSave }) => {
     if (!formData.type) newErrors.type = 'Vui lòng chọn loại';
     if (!formData.size) newErrors.size = 'Vui lòng chọn kích thước';
     if (formData.quantity < 0) newErrors.quantity = 'Số lượng không được âm';
-    if (formData.price <= 0) newErrors.price = 'Giá phải lớn hơn 0';
+    if (formData.price <= 0) newErrors.price = 'Giá bán phải lớn hơn 0';
+    if (formData.importPrice < 0) newErrors.importPrice = 'Giá nhập không được âm'; // Validate giá nhập
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -126,6 +129,7 @@ const ProductForm = ({ isOpen, onClose, product, onSave }) => {
     data.append('quantity', formData.quantity.toString());
     data.append('color', formData.color);
     data.append('price', formData.price.toString());
+    data.append('importPrice', formData.importPrice.toString()); // Thêm giá nhập
     data.append('season', formData.season);
     data.append('homeOrAway', formData.homeOrAway);
     data.append('adultOrKid', formData.adultOrKid);
@@ -162,6 +166,16 @@ const ProductForm = ({ isOpen, onClose, product, onSave }) => {
   };
 
   if (!isOpen) return null;
+
+  // Tính toán profit margin
+  const calculateProfitMargin = () => {
+    const importPrice = parseFloat(formData.importPrice) || 0;
+    const sellPrice = parseFloat(formData.price) || 0;
+    
+    if (importPrice <= 0 || sellPrice <= 0) return 0;
+    
+    return ((sellPrice - importPrice) / sellPrice * 100).toFixed(1);
+  };
 
   return (
     <div className="modal-overlay">
@@ -319,15 +333,10 @@ const ProductForm = ({ isOpen, onClose, product, onSave }) => {
                   type="text"
                   id="season"
                   name="season"
-                  placeholder='Nhập mùa...'
-                  // value={formData.season}
+                  value={formData.season}
                   onChange={handleChange}
+                  placeholder='Nhập mùa...'
                 />
-                  {/* <option value="">Chọn mùa</option>
-                  {seasonOptions.map(option => (
-                    <option key={option} value={option}>{option}</option>
-                  ))}
-                </select> */}
               </div>
 
               <div className="form-group">
@@ -338,7 +347,7 @@ const ProductForm = ({ isOpen, onClose, product, onSave }) => {
                   value={formData.supplier}
                   onChange={handleChange}
                 >
-                <option value='' disabled>Chọn nhà cung cấp</option>
+                  <option value=''>Chọn nhà cung cấp</option>
                   {supplierOptions.map(option => (
                     <option key={option} value={option}>{option}</option>
                   ))}
@@ -367,7 +376,25 @@ const ProductForm = ({ isOpen, onClose, product, onSave }) => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="price">Giá ($) *</label>
+                <label htmlFor="importPrice">Giá nhập ($) *</label>
+                <input
+                  type="number"
+                  id="importPrice"
+                  name="importPrice"
+                  value={formData.importPrice}
+                  onChange={handleChange}
+                  min="0"
+                  step="1"
+                  className={errors.importPrice ? 'error' : ''}
+                  placeholder="Giá nhập từ nhà cung cấp"
+                />
+                {errors.importPrice && <span className="error-message">{errors.importPrice}</span>}
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="price">Giá bán ($) *</label>
                 <input
                   type="number"
                   id="price"
@@ -377,8 +404,21 @@ const ProductForm = ({ isOpen, onClose, product, onSave }) => {
                   min="0"
                   step="1"
                   className={errors.price ? 'error' : ''}
+                  placeholder="Giá bán cho khách hàng"
                 />
                 {errors.price && <span className="error-message">{errors.price}</span>}
+              </div>
+
+              <div className="form-group">
+                <label>Tỷ suất lợi nhuận</label>
+                <div className="profit-display">
+                  {calculateProfitMargin()}%
+                  {formData.importPrice > 0 && formData.price > 0 && (
+                    <small className="profit-note">
+                      Lợi nhuận: {new Intl.NumberFormat('vi-VN').format(formData.price - formData.importPrice)} $
+                    </small>
+                  )}
+                </div>
               </div>
             </div>
           </div>

@@ -193,6 +193,76 @@
   color: var(--text-secondary);
 }
 
+/* Profit Display in Form */
+.profit-display {
+  padding: var(--spacing-sm);
+  background: linear-gradient(135deg, var(--success-light), #e8f5e8);
+  border: 1px solid var(--success-color);
+  border-radius: var(--border-radius);
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--success-color);
+  margin-top: 1.5rem;
+}
+
+.profit-display .profit-note {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 400;
+  margin-top: 0.25rem;
+  color: var(--text-secondary);
+}
+
+/* Price Cells in Table */
+.import-price {
+  color: var(--warning-color);
+  font-weight: 500;
+}
+
+.sell-price {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.profit-cell {
+  text-align: center;
+}
+
+.profit-info .profit-amount {
+  font-weight: 600;
+  color: var(--success-color);
+  font-size: 0.95rem;
+}
+
+.profit-info .profit-percentage {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .product-table th:nth-child(9),
+  .product-table td:nth-child(9),
+  .product-table th:nth-child(11),
+  .product-table td:nth-child(11) {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-table th:nth-child(n+7),
+  .product-table td:nth-child(n+7) {
+    display: none;
+  }
+  
+  .product-table th:last-child,
+  .product-table td:last-child {
+    display: table-cell;
+  }
+}
+
 /* Animations */
 @keyframes lowStockPulse {
   0%, 100% {

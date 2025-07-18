@@ -49,7 +49,9 @@ const ProductList = ({ products, onEdit, onDelete }) => {
               <th>Màu sắc</th>
               <th>Nhà cung cấp</th>
               <th>Số lượng</th>
-              <th>Giá</th>
+              <th>Giá nhập</th>
+              <th>Giá bán</th>
+              <th>Lợi nhuận</th>
               <th>Thao tác</th>
             </tr>
           </thead>
@@ -110,7 +112,25 @@ const ProductList = ({ products, onEdit, onDelete }) => {
                       {product.quantity}
                     </span>
                   </td>
-                  <td className="price-cell">{formatPrice(product.price)}</td>
+                  <td className="price-cell import-price">
+                    {formatPrice(product.importPrice || 0)}
+                  </td>
+                  <td className="price-cell sell-price">
+                    {formatPrice(product.price)}
+                  </td>
+                  <td className="price-cell profit-cell">
+                    <div className="profit-info">
+                      <div className="profit-amount">
+                        {formatPrice((product.price || 0) - (product.importPrice || 0))}
+                      </div>
+                      <div className="profit-percentage">
+                        {product.importPrice && product.price ? 
+                          `${(((product.price - product.importPrice) / product.price) * 100).toFixed(1)}%` 
+                          : '0%'
+                        }
+                      </div>
+                    </div>
+                  </td>
                   <td>
                     <div className="action-buttons">
                       <button 
@@ -133,7 +153,7 @@ const ProductList = ({ products, onEdit, onDelete }) => {
               ))
             ) : (
               <tr>
-                <td colSpan="10" className="no-data">
+                <td colSpan="12" className="no-data">
                   Không có sản phẩm nào
                 </td>
               </tr>
