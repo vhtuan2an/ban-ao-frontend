@@ -26,6 +26,7 @@ const ProductForm = ({ isOpen, onClose, product, onSave }) => {
   // const seasonOptions = ['Mùa hè', 'Mùa đông', 'Cả năm'];
   const homeOrAwayOptions = ['Home', 'Away', 'Third'];
   const adultOrKidOptions = ['Adult', 'Kid'];
+  const supplierOptions = ['Chú Phát', 'Tui bán áo bóng đá', 'Áo bóng đá TPHCM', 'Áo bóng đá Retro'];
 
   useEffect(() => {
     if (product) {
@@ -331,14 +332,17 @@ const ProductForm = ({ isOpen, onClose, product, onSave }) => {
 
               <div className="form-group">
                 <label htmlFor="supplier">Nhà cung cấp</label>
-                <input
-                  type="text"
+                <select
                   id="supplier"
                   name="supplier"
                   value={formData.supplier}
                   onChange={handleChange}
-                  placeholder="Tên nhà cung cấp"
-                />
+                >
+                <option value='' disabled>Chọn nhà cung cấp</option>
+                  {supplierOptions.map(option => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
+                </select>
               </div>
             </div>
           </div>
