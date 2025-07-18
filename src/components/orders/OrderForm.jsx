@@ -15,11 +15,12 @@ const OrderForm = ({ isOpen, onClose, order, onSave }) => {
   const [customers, setCustomers] = useState([]);
   const [products, setProducts] = useState([]);
   const [errors, setErrors] = useState({});
-//   const [loading, setLoading] = useState(false);
 
   const statusOptions = ['Đã tạo', 'Đang xử lý', 'Đã xác nhận', 'Đang giao', 'Đã giao', 'Đã hủy'];
   const paymentMethods = ['Tiền mặt', 'Chuyển khoản', 'Thẻ tín dụng'];
   const paymentStatusOptions = ['Chưa thanh toán', 'Đã thanh toán', 'Hoàn tiền'];
+  const homeOrAwayOptions = ['Home', 'Away'];
+  const adultOrKidOptions = ['Adult', 'Kid'];
 
   useEffect(() => {
     if (isOpen) {
@@ -32,7 +33,19 @@ const OrderForm = ({ isOpen, onClose, order, onSave }) => {
     if (order) {
       setFormData({
         customer: order.customer?._id || order.customer || '',
-        items: order.items || [],
+        items: order.items?.map(item => ({
+          product: item.product?._id || item.product || '',
+          teamName: item.teamName || '',
+          category: item.product?.category || '',
+          size: item.size || '',
+          quantity: item.quantity || 1,
+          price: item.price || 0,
+          subtotal: item.subtotal || 0,
+          printName: item.printName || '',
+          printNumber: item.printNumber || '',
+          homeOrAway: item.homeOrAway || 'Home',
+          adultOrKid: item.adultOrKid || 'Adult'
+        })) || [],
         status: order.status || 'Đã tạo',
         paymentMethod: order.paymentMethod || 'Tiền mặt',
         paymentStatus: order.paymentStatus || 'Chưa thanh toán',
@@ -94,7 +107,11 @@ const OrderForm = ({ isOpen, onClose, order, onSave }) => {
         size: '',
         quantity: 1,
         price: 0,
-        subtotal: 0
+        subtotal: 0,
+        printName: '',
+        printNumber: '',
+        homeOrAway: 'Home',
+        adultOrKid: 'Adult'
       }]
     }));
   };
@@ -137,22 +154,22 @@ const OrderForm = ({ isOpen, onClose, order, onSave }) => {
   };
 
   const calculateTotal = () => {
-  return formData.items.reduce((total, item) => total + (item.subtotal || 0), 0);
+    return formData.items.reduce((total, item) => total + (item.subtotal || 0), 0);
   };
 
   const validate = () => {
-  const newErrors = {};
-  if (!formData.customer) newErrors.customer = 'Vui lòng chọn khách hàng';
-  if (formData.items.length === 0) newErrors.items = 'Vui lòng thêm ít nhất một sản phẩm';
-  
-  formData.items.forEach((item, index) => {
-    if (!item.product) newErrors[`item_${index}_product`] = 'Vui lòng chọn sản phẩm';
-    if (!item.quantity || item.quantity <= 0) newErrors[`item_${index}_quantity`] = 'Số lượng phải lớn hơn 0';
-  });
+    const newErrors = {};
+    if (!formData.customer) newErrors.customer = 'Vui lòng chọn khách hàng';
+    if (formData.items.length === 0) newErrors.items = 'Vui lòng thêm ít nhất một sản phẩm';
+    
+    formData.items.forEach((item, index) => {
+      if (!item.product) newErrors[`item_${index}_product`] = 'Vui lòng chọn sản phẩm';
+      if (!item.quantity || item.quantity <= 0) newErrors[`item_${index}_quantity`] = 'Số lượng phải lớn hơn 0';
+    });
 
-  setErrors(newErrors);
-  return Object.keys(newErrors).length === 0;
-};
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -160,18 +177,20 @@ const OrderForm = ({ isOpen, onClose, order, onSave }) => {
 
     // Chuẩn hóa dữ liệu theo cấu trúc backend mong đợi
     const normalizedItems = formData.items.map(item => ({
-      productId: item.product, // Backend expect productId
-      quantity: parseInt(item.quantity) || 0
-      // Chỉ gửi productId và quantity
+      productId: item.product,
+      quantity: parseInt(item.quantity) || 0,
+      printName: item.printName || '',
+      printNumber: item.printNumber || '',
+      homeOrAway: item.homeOrAway || 'Home',
+      adultOrKid: item.adultOrKid || 'Adult'
     }));
 
     const orderData = {
-      customerId: formData.customer, // Backend expect customerId
+      customerId: formData.customer,
       items: normalizedItems,
       paymentMethod: formData.paymentMethod,
       paymentStatus: formData.paymentStatus,
       notes: formData.notes
-      // Không gửi status, totalAmount - backend sẽ tự tính
     };
 
     // Chỉ thêm _id khi update
@@ -179,7 +198,7 @@ const OrderForm = ({ isOpen, onClose, order, onSave }) => {
       orderData._id = order._id;
     }
 
-    console.log('Order data being sent:', orderData); // Debug log
+    console.log('Order data being sent:', orderData);
     
     onSave(orderData);
     onClose();
@@ -274,8 +293,10 @@ const OrderForm = ({ isOpen, onClose, order, onSave }) => {
             <div className="order-items">
               {formData.items.map((item, index) => (
                 <div key={index} className="order-item">
+                  {/* Main product selection row */}
                   <div className="item-row">
                     <div className="form-group">
+                      <label>Sản phẩm</label>
                       <select
                         value={item.product}
                         onChange={(e) => handleItemChange(index, 'product', e.target.value)}
@@ -294,6 +315,7 @@ const OrderForm = ({ isOpen, onClose, order, onSave }) => {
                     </div>
 
                     <div className="form-group">
+                      <label>Số lượng</label>
                       <input
                         type="number"
                         placeholder="Số lượng"
@@ -308,6 +330,7 @@ const OrderForm = ({ isOpen, onClose, order, onSave }) => {
                     </div>
 
                     <div className="form-group">
+                      <label>Giá</label>
                       <input
                         type="number"
                         placeholder="Giá"
@@ -319,23 +342,83 @@ const OrderForm = ({ isOpen, onClose, order, onSave }) => {
                     </div>
 
                     <div className="subtotal">
-                      {new Intl.NumberFormat('vi-VN').format(item.subtotal || 0)} $
+                      <label>Thành tiền</label>
+                      <div className="price-display">
+                        {new Intl.NumberFormat('vi-VN').format(item.subtotal || 0)} $
+                      </div>
                     </div>
 
                     <button
                       type="button"
                       onClick={() => handleRemoveItem(index)}
                       className="btn btn-danger btn-sm"
+                      style={{ marginTop: '1.5rem' }}
                     >
                       Xóa
                     </button>
                   </div>
+
+                  {/* Customization options row */}
+                  <div className="item-customization">
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label>Tên in</label>
+                        <input
+                          type="text"
+                          placeholder="Tên in trên áo (vd: RONALDO)"
+                          value={item.printName}
+                          onChange={(e) => handleItemChange(index, 'printName', e.target.value)}
+                        />
+                      </div>
+
+                      <div className="form-group">
+                        <label>Số áo</label>
+                        <input
+                          type="text"
+                          placeholder="Số áo (vd: 7)"
+                          value={item.printNumber}
+                          onChange={(e) => handleItemChange(index, 'printNumber', e.target.value)}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label>Sân nhà/Sân khách</label>
+                        <select
+                          value={item.homeOrAway}
+                          onChange={(e) => handleItemChange(index, 'homeOrAway', e.target.value)}
+                        >
+                          {homeOrAwayOptions.map(option => (
+                            <option key={option} value={option}>{option}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="form-group">
+                        <label>Người lớn/Trẻ em</label>
+                        <select
+                          value={item.adultOrKid}
+                          onChange={(e) => handleItemChange(index, 'adultOrKid', e.target.value)}
+                        >
+                          {adultOrKidOptions.map(option => (
+                            <option key={option} value={option}>{option}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
                   
+                  {/* Product details display */}
                   {item.teamName && (
                     <div className="item-details">
                       <span>Đội: {item.teamName}</span>
                       <span>Loại: {item.category}</span>
                       <span>Size: {item.size}</span>
+                      {item.printName && <span>Tên in: {item.printName}</span>}
+                      {item.printNumber && <span>Số áo: {item.printNumber}</span>}
+                      <span>Loại áo: {item.homeOrAway}</span>
+                      <span>Kích cỡ: {item.adultOrKid}</span>
                     </div>
                   )}
                 </div>

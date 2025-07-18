@@ -20,6 +20,21 @@ const ProductList = ({ products, onEdit, onDelete }) => {
     return new Intl.NumberFormat('vi-VN').format(price) + ' $';
   };
 
+  const getTypeLabel = (homeOrAway, adultOrKid) => {
+    const typeMap = {
+      'Home': 'Sân nhà',
+      'Away': 'Sân khách', 
+      'Third': 'Thứ ba'
+    };
+    
+    const audienceMap = {
+      'Adult': 'Người lớn',
+      'Kid': 'Trẻ em'
+    };
+
+    return `${typeMap[homeOrAway] || homeOrAway} - ${audienceMap[adultOrKid] || adultOrKid}`;
+  };
+
   return (
     <>
       <div className="product-table-container">
@@ -29,9 +44,10 @@ const ProductList = ({ products, onEdit, onDelete }) => {
               <th>Hình ảnh</th>
               <th>Tên sản phẩm</th>
               <th>Đội bóng</th>
-              <th>Loại</th>
+              <th>Loại áo</th>
               <th>Kích thước</th>
               <th>Màu sắc</th>
+              <th>Nhà cung cấp</th>
               <th>Số lượng</th>
               <th>Giá</th>
               <th>Thao tác</th>
@@ -60,10 +76,18 @@ const ProductList = ({ products, onEdit, onDelete }) => {
                     <div className="product-info">
                       <div className="product-name">{product.name}</div>
                       <div className="product-category">{product.category}</div>
+                      {product.season && (
+                        <div className="product-season">{product.season}</div>
+                      )}
                     </div>
                   </td>
                   <td>{product.teamName}</td>
-                  <td>{product.type}</td>
+                  <td>
+                    <div className="product-type-info">
+                      <div className="type-main">{getTypeLabel(product.homeOrAway, product.adultOrKid)}</div>
+                      <div className="type-detail">{product.type}</div>
+                    </div>
+                  </td>
                   <td>
                     <span className="size-badge">{product.size}</span>
                   </td>
@@ -74,6 +98,11 @@ const ProductList = ({ products, onEdit, onDelete }) => {
                           <span className="color-text">{product.color}</span>
                         </div>
                       )}
+                    </div>
+                  </td>
+                  <td>
+                    <div className="supplier-info">
+                      {product.supplier || '-'}
                     </div>
                   </td>
                   <td>
@@ -104,7 +133,7 @@ const ProductList = ({ products, onEdit, onDelete }) => {
               ))
             ) : (
               <tr>
-                <td colSpan="9" className="no-data">
+                <td colSpan="10" className="no-data">
                   Không có sản phẩm nào
                 </td>
               </tr>

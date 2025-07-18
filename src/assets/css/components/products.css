@@ -42,6 +42,7 @@
 .product-info .product-category {
   font-size: 0.8rem;
   color: var(--text-secondary);
+  margin-bottom: 0.25rem;
 }
 
 /* Badges */
@@ -146,6 +147,50 @@
 .remove-image-btn:hover {
   background-color: var(--danger-hover);
   transform: scale(1.1);
+}
+
+/* Form Sections */
+.form-section {
+  margin-bottom: var(--spacing-xl);
+  padding: var(--spacing-lg);
+  background: var(--bg-secondary);
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--border-light);
+}
+
+.section-title {
+  margin-bottom: var(--spacing-md);
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: var(--spacing-sm);
+}
+
+/* Product Type Info */
+.product-type-info .type-main {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+.product-type-info .type-detail {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* Product Season */
+.product-season {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Supplier Info */
+.supplier-info {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
 }
 
 /* Animations */

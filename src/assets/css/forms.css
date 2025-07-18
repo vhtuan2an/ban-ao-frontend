@@ -136,3 +136,40 @@
   color: #000000;
   background-color: var(--bg-primary);
 }
+
+/* Order Form Specific Styles */
+.order-form .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.order-form .form-group {
+  margin-bottom: var(--spacing-md);
+}
+
+/* Ensure consistent styling for order form inputs */
+.order-form input,
+.order-form select,
+.order-form textarea {
+  color: #000000 !important;
+}
+
+.order-form input::placeholder {
+  color: #666666;
+  opacity: 1;
+}
+
+/* Special styling for order item inputs */
+.order-item input,
+.order-item select {
+  font-size: 0.9rem;
+  padding: var(--spacing-sm);
+  color: #000000 !important;
+}
+
+.order-item label {
+  font-size: 0.85rem;
+  margin-bottom: var(--spacing-xs);
+}

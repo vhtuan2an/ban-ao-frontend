@@ -49,7 +49,11 @@ const ProductManagement = () => {
         product.category.toLowerCase().includes(term) ||
         product.type.toLowerCase().includes(term) ||
         product.size.toLowerCase().includes(term) ||
-        product.color.toLowerCase().includes(term)
+        product.color.toLowerCase().includes(term) ||
+        product.homeOrAway.toLowerCase().includes(term) ||
+        product.adultOrKid.toLowerCase().includes(term) ||
+        product.supplier.toLowerCase().includes(term) ||
+        product.season.toLowerCase().includes(term)
     );
     
     setFilteredProducts(filtered);

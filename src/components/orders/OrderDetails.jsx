@@ -82,10 +82,14 @@ const OrderDetails = ({ isOpen, onClose, order }) => {
                 <table>
                   <thead>
                     <tr>
+                      <th>Hình ảnh</th>
                       <th>Sản phẩm</th>
                       <th>Đội</th>
-                      <th>Loại</th>
                       <th>Size</th>
+                      <th>Tên in</th>
+                      <th>Số áo</th>
+                      <th>Loại áo</th>
+                      <th>Kích cỡ</th>
                       <th>Số lượng</th>
                       <th>Đơn giá</th>
                       <th>Thành tiền</th>
@@ -94,10 +98,26 @@ const OrderDetails = ({ isOpen, onClose, order }) => {
                   <tbody>
                     {order.items?.map((item, index) => (
                       <tr key={index}>
+                        <td>
+                          {item.image ? (
+                            <img 
+                              src={item.image} 
+                              alt={item.product?.name || 'Product'} 
+                              style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '4px' }}
+                            />
+                          ) : (
+                            <div style={{ width: '50px', height: '50px', backgroundColor: '#f0f0f0', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem' }}>
+                              No Image
+                            </div>
+                          )}
+                        </td>
                         <td>{item.product?.name || 'N/A'}</td>
                         <td>{item.teamName}</td>
-                        <td>{item.category}</td>
                         <td><span className="size-badge">{item.size}</span></td>
+                        <td>{item.printName || '-'}</td>
+                        <td>{item.printNumber || '-'}</td>
+                        <td>{item.homeOrAway || '-'}</td>
+                        <td>{item.adultOrKid || '-'}</td>
                         <td>{item.quantity}</td>
                         <td>{formatPrice(item.price)}</td>
                         <td className="price-cell">{formatPrice(item.subtotal)}</td>
@@ -106,7 +126,7 @@ const OrderDetails = ({ isOpen, onClose, order }) => {
                   </tbody>
                   <tfoot>
                     <tr>
-                      <td colSpan="6"><strong>Tổng cộng:</strong></td>
+                      <td colSpan="10"><strong>Tổng cộng:</strong></td>
                       <td className="price-cell"><strong>{formatPrice(order.totalAmount)}</strong></td>
                     </tr>
                   </tfoot>

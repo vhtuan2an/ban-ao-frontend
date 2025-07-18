@@ -12,6 +12,9 @@ const ProductForm = ({ isOpen, onClose, product, onSave }) => {
     price: 0,
     images: [],
     season: '',
+    homeOrAway: 'Home',
+    adultOrKid: 'Adult',
+    supplier: '',
     description: ''
   });
 
@@ -20,7 +23,9 @@ const ProductForm = ({ isOpen, onClose, product, onSave }) => {
   const categoryOptions = ['Áo', 'Quần', 'Phụ kiện'];
   const typeOptions = ['Ngắn', 'Dài', 'Thể thao', 'Casual'];
   const sizeOptions = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
-  const seasonOptions = ['Mùa hè', 'Mùa đông', 'Cả năm'];
+  // const seasonOptions = ['Mùa hè', 'Mùa đông', 'Cả năm'];
+  const homeOrAwayOptions = ['Home', 'Away', 'Third'];
+  const adultOrKidOptions = ['Adult', 'Kid'];
 
   useEffect(() => {
     if (product) {
@@ -35,6 +40,9 @@ const ProductForm = ({ isOpen, onClose, product, onSave }) => {
         price: product.price || 0,
         images: [], // reset ảnh khi sửa để người dùng chọn lại
         season: product.season || '',
+        homeOrAway: product.homeOrAway || 'Home',
+        adultOrKid: product.adultOrKid || 'Adult',
+        supplier: product.supplier || '',
         description: product.description || ''
       });
     } else {
@@ -49,6 +57,9 @@ const ProductForm = ({ isOpen, onClose, product, onSave }) => {
         price: 0,
         images: [],
         season: '',
+        homeOrAway: 'Home',
+        adultOrKid: 'Adult',
+        supplier: '',
         description: ''
       });
     }
@@ -72,7 +83,7 @@ const ProductForm = ({ isOpen, onClose, product, onSave }) => {
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    console.log('Selected files:', files); // Debug log
+    console.log('Selected files:', files);
     setFormData(prev => ({
       ...prev,
       images: [...prev.images, ...files]
@@ -115,13 +126,16 @@ const ProductForm = ({ isOpen, onClose, product, onSave }) => {
     data.append('color', formData.color);
     data.append('price', formData.price.toString());
     data.append('season', formData.season);
+    data.append('homeOrAway', formData.homeOrAway);
+    data.append('adultOrKid', formData.adultOrKid);
+    data.append('supplier', formData.supplier);
     data.append('description', formData.description);
 
     // Handle images - only append if there are actual files
     if (formData.images && formData.images.length > 0) {
       formData.images.forEach((file) => {
         if (file instanceof File) {
-          console.log('Appending image file:', file.name, file.type, file.size); // Debug log
+          console.log('Appending image file:', file.name, file.type, file.size);
           data.append('images', file);
         }
       });
@@ -157,191 +171,268 @@ const ProductForm = ({ isOpen, onClose, product, onSave }) => {
         </div>
 
         <form onSubmit={handleSubmit} className="product-form">
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="name">Tên sản phẩm *</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className={errors.name ? 'error' : ''}
-              />
-              {errors.name && <span className="error-message">{errors.name}</span>}
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="teamName">Tên đội *</label>
-              <input
-                type="text"
-                id="teamName"
-                name="teamName"
-                value={formData.teamName}
-                onChange={handleChange}
-                className={errors.teamName ? 'error' : ''}
-              />
-              {errors.teamName && <span className="error-message">{errors.teamName}</span>}
-            </div>
-          </div>
-
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="category">Danh mục *</label>
-              <select
-                id="category"
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                className={errors.category ? 'error' : ''}
-              >
-                <option value="">Chọn danh mục</option>
-                {categoryOptions.map(option => (
-                  <option key={option} value={option}>{option}</option>
-                ))}
-              </select>
-              {errors.category && <span className="error-message">{errors.category}</span>}
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="type">Loại *</label>
-              <select
-                id="type"
-                name="type"
-                value={formData.type}
-                onChange={handleChange}
-                className={errors.type ? 'error' : ''}
-              >
-                <option value="">Chọn loại</option>
-                {typeOptions.map(option => (
-                  <option key={option} value={option}>{option}</option>
-                ))}
-              </select>
-              {errors.type && <span className="error-message">{errors.type}</span>}
-            </div>
-          </div>
-
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="size">Kích thước *</label>
-              <select
-                id="size"
-                name="size"
-                value={formData.size}
-                onChange={handleChange}
-                className={errors.size ? 'error' : ''}
-              >
-                <option value="">Chọn size</option>
-                {sizeOptions.map(option => (
-                  <option key={option} value={option}>{option}</option>
-                ))}
-              </select>
-              {errors.size && <span className="error-message">{errors.size}</span>}
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="color">Màu sắc</label>
-              <input
-                type="text"
-                id="color"
-                name="color"
-                value={formData.color}
-                onChange={handleChange}
-                placeholder="Ví dụ: Xanh, Đỏ, Trắng..."
-              />
-            </div>
-          </div>
-
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="quantity">Số lượng *</label>
-              <input
-                type="number"
-                id="quantity"
-                name="quantity"
-                value={formData.quantity}
-                onChange={handleChange}
-                min="0"
-                className={errors.quantity ? 'error' : ''}
-              />
-              {errors.quantity && <span className="error-message">{errors.quantity}</span>}
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="price">Giá ($) *</label>
-              <input
-                type="number"
-                id="price"
-                name="price"
-                value={formData.price}
-                onChange={handleChange}
-                min="0"
-                step="1"
-                className={errors.price ? 'error' : ''}
-              />
-              {errors.price && <span className="error-message">{errors.price}</span>}
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="season">Mùa</label>
-            <select
-              id="season"
-              name="season"
-              value={formData.season}
-              onChange={handleChange}
-            >
-              <option value="">Chọn mùa</option>
-              {seasonOptions.map(option => (
-                <option key={option} value={option}>{option}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label>Hình ảnh (từ thiết bị)</label>
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handleImageChange}
-              key={`${product?._id || 'new'}-${isOpen}`} // Reset file input when form opens
-            />
-            {formData.images.length > 0 && (
-              <div className="image-list">
-                {formData.images.map((file, index) => (
-                  <div key={index} className="image-item">
-                    <img 
-                      src={URL.createObjectURL(file)} 
-                      alt={`Ảnh ${index + 1}`}
-                      onLoad={() => URL.revokeObjectURL(URL.createObjectURL(file))} // Clean up object URL
-                    />
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveImage(index)}
-                      className="remove-image-btn"
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
+          {/* Basic Information */}
+          <div className="form-section">
+            <h3 className="section-title">Thông tin cơ bản</h3>
+            
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="name">Tên sản phẩm *</label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className={errors.name ? 'error' : ''}
+                  placeholder="Ví dụ: Áo Manchester United"
+                />
+                {errors.name && <span className="error-message">{errors.name}</span>}
               </div>
-            )}
-            <small className="form-help">
-              {product ? 'Chọn ảnh mới để thay thế ảnh hiện tại (nếu có)' : 'Chọn một hoặc nhiều ảnh sản phẩm'}
-            </small>
+
+              <div className="form-group">
+                <label htmlFor="teamName">Tên đội *</label>
+                <input
+                  type="text"
+                  id="teamName"
+                  name="teamName"
+                  value={formData.teamName}
+                  onChange={handleChange}
+                  className={errors.teamName ? 'error' : ''}
+                  placeholder="Ví dụ: Manchester United"
+                />
+                {errors.teamName && <span className="error-message">{errors.teamName}</span>}
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="category">Danh mục *</label>
+                <select
+                  id="category"
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                  className={errors.category ? 'error' : ''}
+                >
+                  <option value="">Chọn danh mục</option>
+                  {categoryOptions.map(option => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
+                </select>
+                {errors.category && <span className="error-message">{errors.category}</span>}
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="type">Loại *</label>
+                <select
+                  id="type"
+                  name="type"
+                  value={formData.type}
+                  onChange={handleChange}
+                  className={errors.type ? 'error' : ''}
+                >
+                  <option value="">Chọn loại</option>
+                  {typeOptions.map(option => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
+                </select>
+                {errors.type && <span className="error-message">{errors.type}</span>}
+              </div>
+            </div>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="description">Mô tả</label>
-            <textarea
-              id="description"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              rows="4"
-              placeholder="Mô tả chi tiết về sản phẩm..."
-            />
+          {/* Product Specifications */}
+          <div className="form-section">
+            <h3 className="section-title">Thông số sản phẩm</h3>
+            
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="size">Kích thước *</label>
+                <select
+                  id="size"
+                  name="size"
+                  value={formData.size}
+                  onChange={handleChange}
+                  className={errors.size ? 'error' : ''}
+                >
+                  <option value="">Chọn size</option>
+                  {sizeOptions.map(option => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
+                </select>
+                {errors.size && <span className="error-message">{errors.size}</span>}
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="color">Màu sắc</label>
+                <input
+                  type="text"
+                  id="color"
+                  name="color"
+                  value={formData.color}
+                  onChange={handleChange}
+                  placeholder="Ví dụ: Đỏ, Xanh, Trắng..."
+                />
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="homeOrAway">Loại áo</label>
+                <select
+                  id="homeOrAway"
+                  name="homeOrAway"
+                  value={formData.homeOrAway}
+                  onChange={handleChange}
+                >
+                  {homeOrAwayOptions.map(option => (
+                    <option key={option} value={option}>
+                      {option === 'Home' ? 'Sân nhà' : option === 'Away' ? 'Sân khách' : 'Thứ ba'}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="adultOrKid">Đối tượng</label>
+                <select
+                  id="adultOrKid"
+                  name="adultOrKid"
+                  value={formData.adultOrKid}
+                  onChange={handleChange}
+                >
+                  {adultOrKidOptions.map(option => (
+                    <option key={option} value={option}>
+                      {option === 'Adult' ? 'Người lớn' : 'Trẻ em'}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="season">Mùa</label>
+                <input
+                  type="text"
+                  id="season"
+                  name="season"
+                  placeholder='Nhập mùa...'
+                  // value={formData.season}
+                  onChange={handleChange}
+                />
+                  {/* <option value="">Chọn mùa</option>
+                  {seasonOptions.map(option => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
+                </select> */}
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="supplier">Nhà cung cấp</label>
+                <input
+                  type="text"
+                  id="supplier"
+                  name="supplier"
+                  value={formData.supplier}
+                  onChange={handleChange}
+                  placeholder="Tên nhà cung cấp"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Inventory & Pricing */}
+          <div className="form-section">
+            <h3 className="section-title">Kho & Giá cả</h3>
+            
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="quantity">Số lượng *</label>
+                <input
+                  type="number"
+                  id="quantity"
+                  name="quantity"
+                  value={formData.quantity}
+                  onChange={handleChange}
+                  min="0"
+                  className={errors.quantity ? 'error' : ''}
+                />
+                {errors.quantity && <span className="error-message">{errors.quantity}</span>}
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="price">Giá ($) *</label>
+                <input
+                  type="number"
+                  id="price"
+                  name="price"
+                  value={formData.price}
+                  onChange={handleChange}
+                  min="0"
+                  step="1"
+                  className={errors.price ? 'error' : ''}
+                />
+                {errors.price && <span className="error-message">{errors.price}</span>}
+              </div>
+            </div>
+          </div>
+
+          {/* Images */}
+          <div className="form-section">
+            <h3 className="section-title">Hình ảnh</h3>
+            
+            <div className="form-group">
+              <label>Hình ảnh sản phẩm</label>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleImageChange}
+                key={`${product?._id || 'new'}-${isOpen}`}
+              />
+              {formData.images.length > 0 && (
+                <div className="image-list">
+                  {formData.images.map((file, index) => (
+                    <div key={index} className="image-item">
+                      <img 
+                        src={URL.createObjectURL(file)} 
+                        alt={`Ảnh ${index + 1}`}
+                        onLoad={() => URL.revokeObjectURL(URL.createObjectURL(file))}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveImage(index)}
+                        className="remove-image-btn"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <small className="form-help">
+                {product ? 'Chọn ảnh mới để thay thế ảnh hiện tại (nếu có)' : 'Chọn một hoặc nhiều ảnh sản phẩm'}
+              </small>
+            </div>
+          </div>
+
+          {/* Description */}
+          <div className="form-section">
+            <h3 className="section-title">Mô tả</h3>
+            
+            <div className="form-group">
+              <label htmlFor="description">Mô tả chi tiết</label>
+              <textarea
+                id="description"
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                rows="4"
+                placeholder="Mô tả chi tiết về sản phẩm..."
+              />
+            </div>
           </div>
 
           <div className="form-actions">
@@ -349,7 +440,7 @@ const ProductForm = ({ isOpen, onClose, product, onSave }) => {
               Hủy
             </button>
             <button type="submit" className="btn btn-primary">
-              Lưu
+              {product ? 'Cập nhật' : 'Tạo sản phẩm'}
             </button>
           </div>
         </form>
