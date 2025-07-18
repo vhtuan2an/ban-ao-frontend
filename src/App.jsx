@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react
 import CustomerManagement from './pages/CustomerManagement';
 import ProductManagement from './pages/ProductManagement';
 import OrderManagement from './pages/OrderManagement';
+import CompletedOrderManagement from './pages/CompleteorderManagement';
 import './assets/css/main.css';
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
               <Route path="/customers" element={<CustomerManagement />} />
               <Route path="/products" element={<ProductManagement />} />
               <Route path="/orders" element={<OrderManagement />} />
+              <Route path="/completed-orders" element={<CompletedOrderManagement />} />
               <Route path="/reports" element={
                 <div className="coming-soon">
                   <h2>Báo cáo thống kê</h2>
@@ -59,6 +61,7 @@ function Sidebar() {
     { path: '/customers', label: 'Quản lý khách hàng', icon: '👥' },
     { path: '/products', label: 'Quản lý sản phẩm', icon: '👕' },
     { path: '/orders', label: 'Quản lý đơn hàng', icon: '📦' },
+    { path: '/completed-orders', label: 'Đơn hàng đã giao', icon: '✅' },
     { path: '/reports', label: 'Báo cáo thống kê', icon: '📊' },
     { path: '/settings', label: 'Cài đặt hệ thống', icon: '⚙️' }
   ];

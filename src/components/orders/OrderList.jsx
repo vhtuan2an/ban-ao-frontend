@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const OrderList = ({ orders, onEdit, onDelete, onViewDetails }) => {
+const OrderList = ({ orders, onEdit, onDelete, onViewDetails, isReadOnly = false }) => {
   const [deleteConfirm, setDeleteConfirm] = useState({ show: false, order: null });
 
   const handleDeleteClick = (order) => {
@@ -64,6 +64,7 @@ const OrderList = ({ orders, onEdit, onDelete, onViewDetails }) => {
               <th>Mã đơn</th>
               <th>Khách hàng</th>
               <th>Ngày đặt</th>
+              {isReadOnly && <th>Ngày giao</th>}
               <th>Tổng tiền</th>
               <th>Trạng thái</th>
               <th>Thanh toán</th>
@@ -91,6 +92,9 @@ const OrderList = ({ orders, onEdit, onDelete, onViewDetails }) => {
                     </div>
                   </td>
                   <td>{formatDate(order.orderDate)}</td>
+                  {isReadOnly && (
+                    <td>{formatDate(order.updatedAt)}</td>
+                  )}
                   <td className="price-cell">{formatPrice(order.totalAmount)}</td>
                   <td>{getStatusBadge(order.status)}</td>
                   <td>{getPaymentStatusBadge(order.paymentStatus)}</td>
@@ -104,28 +108,41 @@ const OrderList = ({ orders, onEdit, onDelete, onViewDetails }) => {
                       >
                         Xem
                       </button>
-                      <button 
-                        className="btn btn-sm btn-primary" 
-                        onClick={() => onEdit(order)}
-                        title="Sửa"
-                      >
-                        Sửa
-                      </button>
-                      <button 
-                        className="btn btn-sm btn-danger" 
-                        onClick={() => handleDeleteClick(order)}
-                        title="Xóa"
-                      >
-                        Xóa
-                      </button>
+                      {!isReadOnly && (
+                        <>
+                          <button 
+                            className="btn btn-sm btn-primary" 
+                            onClick={() => onEdit(order)}
+                            title="Sửa"
+                          >
+                            Sửa
+                          </button>
+                          <button 
+                            className="btn btn-sm btn-danger" 
+                            onClick={() => handleDeleteClick(order)}
+                            title="Xóa"
+                          >
+                            Xóa
+                          </button>
+                        </>
+                      )}
+                      {isReadOnly && (
+                        <button 
+                          className="btn btn-sm btn-danger" 
+                          onClick={() => handleDeleteClick(order)}
+                          title="Xóa"
+                        >
+                          Xóa
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="8" className="no-data">
-                  Không có đơn hàng nào
+                <td colSpan={isReadOnly ? "9" : "8"} className="no-data">
+                  {isReadOnly ? "Không có đơn hàng đã giao nào" : "Không có đơn hàng nào"}
                 </td>
               </tr>
             )}
@@ -142,6 +159,9 @@ const OrderList = ({ orders, onEdit, onDelete, onViewDetails }) => {
             </div>
             <div className="modal-body">
               <p>Bạn có chắc chắn muốn xóa đơn hàng <strong>#{deleteConfirm.order?._id.slice(-6).toUpperCase()}</strong>?</p>
+              {isReadOnly && (
+                <p className="warning-text">⚠️ Đây là đơn hàng đã giao hoàn thành.</p>
+              )}
             </div>
             <div className="modal-footer">
               <button className="btn btn-secondary" onClick={handleDeleteCancel}>

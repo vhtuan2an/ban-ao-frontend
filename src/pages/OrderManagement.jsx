@@ -23,12 +23,35 @@ const OrderManagement = () => {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const data = await orderApi.getAllOrders();
-      
-      setOrders(data.data);
-      setFilteredOrders(data.data);
-      console.log('Fetched orders at management:', data);
-      setError(null);
+      const response = await orderApi.getAllOrders();
+      console.log('Full API response:', response); // Debug để xem cấu trúc dữ liệu
+    
+    // Kiểm tra cấu trúc dữ liệu trả về
+    let ordersData = [];
+    
+    if (response.data) {
+      // Kiểm tra các cấu trúc có thể có
+      if (Array.isArray(response.data)) {
+        ordersData = response.data;
+      } else if (response.data.data && Array.isArray(response.data.data)) {
+        ordersData = response.data.data;
+      } else if (response.data.orders && Array.isArray(response.data.orders)) {
+        ordersData = response.data.orders;
+      } else {
+        console.warn('Unexpected data structure:', response.data);
+        ordersData = [];
+      }
+    }
+    
+    console.log('Orders data extracted:', ordersData);
+    
+    // Lọc bỏ các đơn hàng đã giao
+    const activeOrders = ordersData.filter(order => order && order.status !== 'Đã giao');
+    
+    setOrders(activeOrders);
+    setFilteredOrders(activeOrders);
+    console.log('Fetched active orders at management:', activeOrders);
+    setError(null);
     } catch (error) {
       setError('Không thể tải danh sách đơn hàng. Vui lòng thử lại sau.');
       console.error('Error fetching orders:', error);
